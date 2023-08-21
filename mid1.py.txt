@@ -1,0 +1,127 @@
+from datetime import datetime
+#reference:https://bobbyhadz.com/blog/value-error-unconverted-data-remains-in-python
+
+
+#read employees from file them in a dictionary
+def read_employees_from_file():
+    employees = {}
+    try:
+        with open("employees.txt", "r") as file: #https://www.pythontutorial.net/python-basics/python-read-text-file/
+             for line in file:
+                 employee_data= line.strip().split(", ")
+                 employee_id = employee_data[0]
+                 username =employee_data[1]
+                 join_date = datetime.datetime.strptime(employee_data[2],"%y%m%d").date() # reference: https://www.programiz.com/python-programming/datetime
+                 gender = employee_data[3]
+                 salary = float(employee_data[4])
+                 employees[employee_id] = {
+                 "username": username,
+                 "join_date":join_date,
+                 "gender":gender,
+                 "salary":salary
+        }
+    except  FileNotFoundError :
+        with open("employees.txt","w") as file:
+            pass
+
+    return employees 
+
+#search username emp
+def searchEmployee(username):
+  for key, value in employees.items():
+    if username == value['username']:
+      return value
+  return False
+  
+# username and password
+def login(username, password):
+  if username == "mohamad younes" and password == "71301803":
+    return "admin"
+  elif searchEmployee(username):  
+    return "user"
+  else:
+    return "invalid"
+
+# menu of display admin
+def display_admin_menu():
+  print("admin menu:")
+  print("1.  display statistics")
+  print("2.  add an employee")
+  print("3.  display all employees")
+  print("4.  change employee's salary")
+  print("5.  remove employee")
+  print("6.  raise employee's salary")
+  print("7.  exit")
+
+# display user menu based on gender
+def display_user_menu(gender):
+  if gender == "male":
+    text = "Hi Mr. "
+  elif gender == "female":
+    text = "Hi Ms. "
+  else: 
+    text = "Hi "
+  print(text + username)
+  print("user menu:")
+  print("1.  check my salary")
+  print("2.  exit")
+
+#display employee statictics
+def display_statictics():
+    male_count = 0
+    female_count = 0
+    for employee_id, employee in employees.items():
+        if employee["gender"] == "male":
+           male_count += 1
+        elif employee["gender"] == "female":
+           female_count += 1
+    print("male employees:", male_count)
+    print("female employees:", female_count)
+
+# add employee:
+def add_employee():
+  username = input("enter username: ")
+  gender = input("enter gender(male or female): " )
+  salary = float(input("enter salary: "))
+  max_id = max(employees.keys(), default="emp000")[3:]
+  new_id = "emp" + str(int(max_id) + 1).zfill(3) #https://www.w3schools.com/python/ref_string_zfill.asp
+  join_date = datetime.date.today()
+  employees[new_id] = {
+    "username": username,
+    "join_date": join_date,
+    "gender": gender,
+    "salary": salary
+  }
+  print("employee added successfully...")
+  print(employees)
+
+# display all employees
+def display_all_employees():
+    sorted_employees = sorted(employees.items(), key=lambda x: x[1]["join_date"], reverse=True)
+    for employee_id, employee in sorted_employees:
+        print("Employee ID:", employee_id)
+        print("Username:", employee["username"])
+        print("Join Date:", employee["join_date"].strftime("%Y-%m-%d"))
+        print("Gender:", employee["gender"])
+        print("Salary:", employee["salary"])
+        print()
+
+
+# change employee's salary:
+def change_salary():
+  employee_id = input("enter employee ID: ")
+  if employee_id in employees:
+     new_salary = int(input("enter new salary: "))
+     employees[employee_id]["salary"] = new_salary
+     print("salary changed...")
+  else:
+     print("employee not found.")
+
+# remove an employee:
+def remove_employee():
+    employee_id = input("enter employee ID: ")
+    if employee_id in employees:
+       del employees[employee_id]
+       print("employee removed...")
+    else:
+      print("employee not found.")

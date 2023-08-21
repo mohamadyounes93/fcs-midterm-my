@@ -125,3 +125,22 @@ def remove_employee():
        print("employee removed...")
     else:
       print("employee not found.")
+
+
+# raise employee's salary:
+def raise_salary():
+    employee_id = input("enter employee ID: ")
+    if employee_id in employees:
+        raise_percentage = float(input("enter raise percentage: "))
+        employees[employee_id]["salary"] = employees[employee_id]["salary"] + employees[employee_id]["salary"] * (raise_percentage / 100)
+        print("salary raised...")
+    else:
+        print("employee not found.")
+
+  # Function to check user's salary
+def check_salary(username):
+    for employee_id, employee in employees.items():
+        if employee["username"] == username:
+            print("Your salary is:", employee["salary"])
+            return
+    print("Employee not found.")

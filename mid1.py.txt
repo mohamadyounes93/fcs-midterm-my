@@ -144,3 +144,30 @@ def check_salary(username):
             print("Your salary is:", employee["salary"])
             return
     print("Employee not found.")
+
+
+
+
+# Function to save login timestamp
+def save_login_timestamp(username):
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open("login_timestamps.txt", "a") as file:
+        file.write(f"{username}: {timestamp}\n")
+
+
+# save emplyees to file
+def save_employees():
+    with open("employees.txt", "w") as file: #https://www.freecodecamp.org/news/python-write-to-file-open-read-append-and-other-file-handling-functions-explained/
+        for emp_id, emp_data in employees.items():
+            username = emp_data['username']
+            join_date = emp_data['join_date'].strftime('%Y%m%d')  # Format the date as YYYYMMDD
+            gender = emp_data['gender']
+            salary = emp_data['salary']
+
+            # Write the data to the file
+            file.write(f"{emp_id}, {username}, {join_date}, {gender}, {salary}\n")
+
+
+# Read employees from file
+employees = read_employees_from_file()
+

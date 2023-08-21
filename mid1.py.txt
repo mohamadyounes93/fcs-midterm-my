@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 #reference:https://bobbyhadz.com/blog/value-error-unconverted-data-remains-in-python
 
 
@@ -11,7 +11,7 @@ def read_employees_from_file():
                  employee_data= line.strip().split(", ")
                  employee_id = employee_data[0]
                  username =employee_data[1]
-                 join_date = datetime.datetime.strptime(employee_data[2],"%y%m%d").date() # reference: https://www.programiz.com/python-programming/datetime
+                 join_date = datetime.datetime.strptime(employee_data[2],"%Y%m%d").date() # reference: https://www.programiz.com/python-programming/datetime
                  gender = employee_data[3]
                  salary = float(employee_data[4])
                  employees[employee_id] = {
@@ -35,7 +35,7 @@ def searchEmployee(username):
   
 # username and password
 def login(username, password):
-  if username == "mohamad younes" and password == "71301803":
+  if username == "admin" and password == "admin123123":
     return "admin"
   elif searchEmployee(username):  
     return "user"
@@ -125,8 +125,7 @@ def remove_employee():
        print("employee removed...")
     else:
       print("employee not found.")
-
-
+      
 # raise employee's salary:
 def raise_salary():
     employee_id = input("enter employee ID: ")
@@ -144,8 +143,6 @@ def check_salary(username):
             print("Your salary is:", employee["salary"])
             return
     print("Employee not found.")
-
-
 
 
 # Function to save login timestamp
@@ -171,3 +168,62 @@ def save_employees():
 # Read employees from file
 employees = read_employees_from_file()
 
+# Main program 
+login_attempts = 0
+while login_attempts < 5:
+    username = input("Enter username: ")
+    password = input("Enter password (leave empty for normal employee): ")
+
+    login_result = login(username, password)
+    if login_result == "admin":
+        display_admin_menu()
+        option = input("Enter option number: ")
+        while option != "7":
+
+            if option == "1":
+                display_statictics()
+            elif option == "2":
+                add_employee()
+            elif option == "3":
+                display_all_employees()
+            elif option == "4":
+                change_salary()
+            elif option == "5":
+                remove_employee()
+            elif option == "6":
+                raise_salary()
+            elif option == "7":
+                break
+            display_admin_menu()
+            option = input("Enter option number: ")
+        if option == "7":
+            save_login_timestamp(username)
+            break
+    elif login_result == "user":
+        user = searchEmployee(username)
+        print(user)
+        display_user_menu(user["gender"])
+        option = input("Enter option number: ")
+        while option != "2":
+
+            if option == "1":
+                check_salary(username)
+            elif option == "2":
+                break
+            user = searchEmployee(username)
+
+            display_user_menu(user["gender"])
+            option = input("Enter option number: ")
+        if option == "2":
+            save_login_timestamp(username)
+            break
+    else:
+        print("Incorrect Username and/or Password")
+        login_attempts += 1
+
+    print()
+
+if login_attempts >= 5:
+    print("Exceeded maximum login attempts")
+
+save_employees()
